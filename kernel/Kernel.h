@@ -3,6 +3,7 @@
 
 #include "task.h"
 
+void Kernel_start();
 void Kernel_yield();
 
 #endif

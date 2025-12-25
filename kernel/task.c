@@ -3,17 +3,19 @@
 
 #include "ARMv7AR.h"
 #include "task.h"
-
+#include "switch.h"
 static KernelTcb_t sTask_list[MAX_TASK_NUM];
 static uint32_t sAllocated_tcb_index;
 static uint32_t sCurrent_tcb_index;
+
 static KernelTcb_t* Scheduler_round_robin_algorithm();
-static KernelTcb_t* sCurrent_tcb;
-static KernelTcb_t* sNext_tcb;
+KernelTcb_t* sCurrent_tcb;
+KernelTcb_t* sNext_tcb;
 
 
 void Kernel_task_init(){
     sAllocated_tcb_index = 0;
+    sCurrent_tcb_index=0;
 
     for(uint32_t i=0; i<MAX_TASK_NUM; i++){
         sTask_list[i].stack_base = (uint8_t *)(TASK_STACK_START + (i * USR_TASK_STACK_SIZE));
@@ -37,6 +39,11 @@ uint32_t Kernel_task_create(KernelTaskFunc_t startFunc){
     ctx->pc = (uint32_t)startFunc;
     return (sAllocated_tcb_index-1);
     
+}
+
+void Kernel_task_start(){
+    sNext_tcb = &sTask_list[sCurrent_tcb_index];
+    Restore_context();
 }
 
 static KernelTcb_t* Scheduler_round_robin_algorithm(){

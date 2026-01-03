@@ -7,6 +7,7 @@ typedef enum utoa_t{
     utoa_hex=16,
 }utoa_t;
 
+void memclr(void* dst, uint32_t count);
 uint32_t putstr(const char * s);
 uint32_t debug_printf(const char* format, ...);
 uint32_t vsprintf(char * buf, const char* format, va_list arg);
